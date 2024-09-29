@@ -9,14 +9,17 @@
 const uint8_t pots = 3;
 const uint8_t buttons = 4;
 const uint8_t toggles = 2;
-const uint8_t sr_clock = 10;
-const uint8_t sr_latch = 11;
-const uint8_t sr_data = 12;
+const uint8_t srClock = 12;
+const uint8_t srLatch = 13;
+const uint8_t srData = 14;
+const uint8_t rotLeft = 9;
+const uint8_t rotRight = 10;
+const uint8_t rotButton = 11;
 const uint8_t potPins[pots] = {A0, A1, A2};
 const uint8_t buttPins[buttons] = {4, 5, 6};
 const uint8_t togglePins[toggles] = {7, 8};
-const uint8_t rotaryPin = 9;
-const uint8_t srPins[3] = {sr_clock, sr_latch, sr_data};
+const uint8_t rotaryPins[3] = {rotLeft, rotRight, rotButton};
+const uint8_t srPins[3] = {srClock, srLatch, srData};
 
 // ****************************************** struct definitions *******************************************************
 
@@ -56,6 +59,10 @@ void setup(){
   // set up toggle switches
   pinMode(togglePins[0], INPUT_PULLUP);
   pinMode(togglePins[1], INPUT_PULLUP);
+  // set up rotary encoder
+  for (int i = 0; i < 3; i++){
+    pinMode(rotaryPins[i], INPUT_PULLUP);
+  }  
   // set up ShiftRegister
   for (int i = 0; i < 3; i++){
     pinMode(srPins[i], OUTPUT);
@@ -82,6 +89,10 @@ int8_t readPot(uint8_t pin){
 
 bool readButton(uint8_t pin, bool oldValue){
   // decide if button have been pressed
+}
+
+bool readToggle(uint8_t pin){
+  // get toggle switch state
 }
 
 uint8_t readRotary(uint8_t pin, uint8_t oldValue){

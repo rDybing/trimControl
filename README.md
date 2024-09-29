@@ -4,7 +4,7 @@
 
 ## Build
 
-Intended target is a Sparkfun Pro Micro Arduino clone and developed using PlatformIO. Should work fine with standard Arduino IDE as well. Ensure target MCU is set to Sparkfun Pro Micro and that the libraries this project usues is available for your dev environment. 
+Intended target is a Sparkfun Pro Micro Arduino clone and developed using PlatformIO. Should work fine with standard Arduino IDE as well. Ensure target MCU is set to Sparkfun Pro Micro and that the libraries this project uses is available for your dev environment. 
 
 **Contact:**
 
@@ -22,7 +22,7 @@ Linked In: | Roy Dybing
 
 #### v.0.0.1: 29th of September 2024
 
-- First commit, WiP...
+- Day 1 work very much in process...
 
 ---
 
