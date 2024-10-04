@@ -110,8 +110,11 @@ uint8_t readRotary(uint8_t pin){
   // get new value for rotary encoder
 }
 
-void updateLEDs(){
+void pushShiftRegister(){
   // push out to shift register
+  digitalWrite(srPins[1], LOW);
+  shiftOut(srPins[2], srPins[0], LSBFIRST, state.leds);
+  digitalWrite(srPins[1], HIGH);
 }
 
 // if jitter is on, add/sub 1 from bank2 per second
@@ -218,6 +221,9 @@ void loop(){
   button3.loop();
   toggle0.loop();
   toggle1.loop();
+  // read buttons & toggles
+  readButtons();
+  readToggle();
   // read pots
   for (int i = 0; i < potsReal; i++){
     if (state.toggle[0] == false){
@@ -230,8 +236,7 @@ void loop(){
   if (state.jitter){
     jitter();
   }
-  // read buttons & toggles
-  readButtons();
-  readToggle();
   // read rotary encoder
+  // update LEDs depending on state
+  // push to shift register
 }
