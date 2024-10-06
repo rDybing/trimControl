@@ -64,12 +64,32 @@ ezButton toggle1(togglePins[1]);
 
 // ****************************************** functions ****************************************************************
 
+void initButtonTimers(){
+  button0.loop();
+  button1.loop();
+  button2.loop();
+  button3.loop();
+  toggle0.loop();
+  toggle1.loop();
+}
+
 int8_t readPot(uint8_t pin){
   // analogRead uses 10 bit number (0..1024) so divide result from
   // read with 4 before returning, then subtract 127 to go from 0..255 to -127..128
   int in = analogRead(pin);
   int8_t out = (in / 4) - 127;
   return out;
+}
+
+void readPots(){
+  for (int i = 0; i < potsReal; i++){
+    if (state.toggle[0] == false){
+      state.pot[i] = readPot(potPins[i]);
+    }
+    if (state.toggle[0] == true){
+      state.pot[i+3] = readPot(potPins[i]);
+    }
+  }
 }
 
 void readButtons(){
@@ -106,14 +126,28 @@ void readToggle(){
   }
 }
 
+void updateLEDs(){
+  for (int i; i < toggles; i++){
+      bitWrite(state.leds, i * 2, state.toggle[i]);
+      bitWrite(state.leds, (i * 2) + 1, !state.toggle[i]);
+  }
+  for (int i; i < buttonsReal; i++){
+    if (state.button[i] || state.button[i + 4]){
+      bitWrite(state.leds, i + buttonsReal, true);
+    } else {
+      bitWrite(state.leds, i + buttonsReal, false);
+    }
+  }
+}
+
 uint8_t readRotary(uint8_t pin){
   // get new value for rotary encoder
 }
 
-void pushShiftRegister(){
+void pushShiftRegister(uint8_t leds){
   // push out to shift register
   digitalWrite(srPins[1], LOW);
-  shiftOut(srPins[2], srPins[0], LSBFIRST, state.leds);
+  shiftOut(srPins[2], srPins[0], LSBFIRST, leds);
   digitalWrite(srPins[1], HIGH);
 }
 
@@ -214,29 +248,14 @@ void setup(){
 // ****************************************** main loop ****************************************************************
 
 void loop(){
-  // init buttons and toggles timers
-  button0.loop();
-  button1.loop();
-  button2.loop();
-  button3.loop();
-  toggle0.loop();
-  toggle1.loop();
-  // read buttons & toggles
+  initButtonTimers();
   readButtons();
   readToggle();
-  // read pots
-  for (int i = 0; i < potsReal; i++){
-    if (state.toggle[0] == false){
-      state.pot[i] = readPot(potPins[i]);
-    }
-    if (state.toggle[0] == true){
-      state.pot[i+3] = readPot(potPins[i]);
-    }
-  }
+  readPots();
   if (state.jitter){
     jitter();
   }
   // read rotary encoder
-  // update LEDs depending on state
-  // push to shift register
+  updateLEDs();
+  pushShiftRegister(state.leds);
 }
