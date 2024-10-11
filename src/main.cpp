@@ -12,12 +12,12 @@ const uint8_t potsVirtual = 6;
 const uint8_t buttonsReal = 4;
 const uint8_t buttonsVirtual = 8;
 const uint8_t toggles = 2;
-const uint8_t srClock = 14;
-const uint8_t srLatch = 15;
-const uint8_t srData = 10;
+const uint8_t srClock = 15;
+const uint8_t srLatch = 14;
+const uint8_t srData = 16;
 const uint8_t potPins[potsReal] = {A0, A1, A2};
-const uint8_t buttPins[buttonsReal] = {3, 4, 5, 6};
-const uint8_t togglePins[toggles] = {7, 8};
+const uint8_t buttPins[buttonsReal] = {4, 5, 6, 7};
+const uint8_t togglePins[toggles] = {8, 9};
 const uint8_t srPins[3] = {srClock, srLatch, srData};
 
 // ****************************************** struct definitions *******************************************************
@@ -70,21 +70,20 @@ int readPot(uint8_t pin){
 
 void readPots(){
   for (int i = 0; i < potsReal; i++){
-    if (state.toggle[0] == false){
-      int old = state.pot[i];
+    if (!state.toggle[0]){
       state.pot[i] = readPot(potPins[i]);
-      if ((state.pot[i] != old)  && test) {
-        Serial.println(state.pot[i]);
-      }
     }
-    if (state.toggle[0] == true){
-      int old = state.pot[i+3];
+    if (state.toggle[0]){
       state.pot[i+3] = readPot(potPins[i]);
-      if ((state.pot[i+3] != old) && test) {
-        Serial.println(state.pot[i]);
-      }
     }
+    
+    Serial.print(state.pot[i]);
+    Serial.print(":");
+    Serial.print(state.pot[i+3]);
+    Serial.print(":");
+    
   }
+  Serial.println();
 }
 
 void readButtons(){
@@ -149,11 +148,11 @@ void readToggle(){
 
 void updateLEDs(){
   for (int i; i < toggles; i++){
-      bitWrite(state.leds, i * 2, state.toggle[i]);
-      bitWrite(state.leds, (i * 2) + 1, !state.toggle[i]);
+      bitWrite(state.leds, i * 2, !state.toggle[i]);
+      bitWrite(state.leds, (i * 2) + 1, state.toggle[i]);
   }
   for (int i; i < buttonsReal; i++){
-    if (state.button[i] || state.button[i + 4]){
+    if (state.button[i]){
       bitWrite(state.leds, i + buttonsReal, true);
     } else {
       bitWrite(state.leds, i + buttonsReal, false);
@@ -172,42 +171,38 @@ void pushShiftRegister(){
 void jitter(){
   timer.next = millis();
   if (timer.next > (timer.prev + timer.delay)){
+    /*
     if (test){
       Serial.print("JIT ");
     }
+    */
     timer.prev = timer.prev;
     if (timer.direction){
-      if (test){
-        Serial.println("up!");
+      if (state.pot[3] < 255){
+        state.pot[3]++;
       }
-      state.pot[3]++;
-      state.pot[4]++;
+      if (state.pot[4] < 255){
+        state.pot[4]++;
+      }
     }
     if (!timer.direction){
-      if (test){
-        Serial.print("dn!");
+      if (state.pot[3] > 0){
+        state.pot[3]--;
       }
-      state.pot[3]--;
-      state.pot[4]--;
+      if (state.pot[4] > 0){
+        state.pot[4]--;
+      }
     }
     timer.direction = !timer.direction; 
   }
   /* reset if device been running for almost 50 days, preventing overflow
   if (timer.prev > 4200000000){
-    timer.prev = 0;
-    timer.next = 0;
-  }
   */
 }
 
 // ****************************************** set pins and initial state ***********************************************
 
 void setup(){
-  /* set up potentiometers
-  for (int i = 0; i < potsReal; i++){
-    pinMode(potPins[i], INPUT);
-  }
-  */
   // zero out all pots
   for (int i = 0; i < potsVirtual; i++){
     state.pot[i] = 0;
