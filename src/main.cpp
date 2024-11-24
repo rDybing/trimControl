@@ -69,6 +69,8 @@ int readPot(uint8_t pin){
 }
 
 void readPots(){
+  int old1 = state.pot[3];
+  int old2 = state.pot[4];
   for (int i = 0; i < potsReal; i++){
     if (!state.toggle[0]){
       state.pot[i] = readPot(potPins[i]);
@@ -76,7 +78,9 @@ void readPots(){
     if (state.toggle[0]){
       state.pot[i+3] = readPot(potPins[i]);
     }
-    
+    if (state.jitter && (state.pot[3] == old1 || state.pot[4] == old2)){
+      jitter();
+    }
     Serial.print(state.pot[i]);
     Serial.print(":");
     Serial.print(state.pot[i+3]);
@@ -239,9 +243,6 @@ void loop(){
   readButtons();
   readToggle();
   readPots();
-  if (state.jitter){
-    jitter();
-  }
   // read rotary encoder
   updateLEDs();
   pushShiftRegister();

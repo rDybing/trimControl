@@ -1,6 +1,6 @@
 # trimControl
 
-**trimControl** is an Arduino based controller for flight simulators. Technically working as a standard joystick, but intended to be used as an auxillary controller for whatever one would like to control with it. In IL2 for instance, the trim axis - and toggling with one of the mode switches, control Gyro sights and/or bomb windage adjustments. The buttons can be programmed in game to whatever as well, with it's own toggle switch to change mode of them. Rotary encoder to control radios and such, with button press to latch.
+**trimControl** is an Arduino based controller for flight simulators. Technically working as a standard joystick, but intended to be used as an auxillary controller for whatever one would like to control with it. In IL2 for instance, the trim axis - and toggling with one of the mode switches, control Gyro sights and/or level bombing settings. The buttons can be programmed in game to whatever as well, with it's own toggle switch to change between bank 0 and 1 for them as well. Rotary encoder to control radios and such, with button press.
 
 ## Build
 
@@ -20,15 +20,31 @@ Linked In: | Roy Dybing
 
 - Version format: [major release].[new feature(s)].[bugfix patch-version]: Date
 
-#### v.0.0.1: 29th of September 2024
+### v.0.0.1: 29th of September 2024
 
 - Day 1 work very much in process...
+
+### v.0.0.2: 11th of October 2024
+
+- Working more or less with the hardware
+
+---
+
+## To do
+
+- Have Button LEDs latch
+- Mode switch
+  - B0 + B1 for 3 seconds: Toggle jitter to pot bank 1 for IL2 gyro sights purposes
+  - B0 + B2 for 3 seconds: Zero out LEDs and toggle button LED latching
+  - B0 + B3 for 3 seconds: TBA
+- Set as a Joystick device
 
 ---
 
 ## Known issues
 
-- N/A
+- Toggles not initializing properly to set mode on startup
+- Button LEDs not lighting up
 
 ## License: MIT
 
